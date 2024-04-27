@@ -1,5 +1,5 @@
 #!/bin/bash
 
-export FLASK_APP=app
+export QUART_APP=app
 
-export FLASK_ENV=development
+export QUART_ENV=development

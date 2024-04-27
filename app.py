@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, flash, redirect
+from quart import Quart, render_template, request, url_for, flash, redirect
 import sqlite3
 from werkzeug.exceptions import abort
 
@@ -19,26 +19,26 @@ def get_post(post_id):
     return post
 
 
-app = Flask(__name__)
+app = Quart(__name__)
 app.config['SECRET_KEY'] = 'ThIs v3ry S3crat'
 
 
 @app.route('/')
-def index():
+async def index():
     conn = get_db_connection()
     posts = conn.execute('SELECT * FROM posts').fetchall()
     conn.close()
-    return render_template('index.html', posts=posts)
+    return await render_template('index.html', posts=posts)
 
 
 @app.route('/<int:post_id>')
-def post(post_id):
+async def post(post_id):
     post = get_post(post_id)
-    return render_template('post.html', post=post)
+    return await render_template('post.html', post=post)
 
 
 @app.route('/create', methods=('GET', 'POST'))
-def create():
+async def create():
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -52,16 +52,17 @@ def create():
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
-    return render_template('create.html')
+    return await render_template('create.html')
 
 
 @app.route('/<int:id>/edit', methods=('GET', 'POST'))
-def edit(id):
+async def edit(id):
     post = get_post(id)
 
     if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
+        form = await request.form
+        title = form['title']
+        content = form['content']
 
         if not title:
             flash('Title is required!')
@@ -74,18 +75,18 @@ def edit(id):
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('edit.html', post=post)
+    return await render_template('edit.html', post=post)
 
 
 @app.route('/<int:id>/delete', methods=('POST',))
-def delete(id):
+async def delete(id):
     post = get_post(id)
     conn = get_db_connection()
     conn.execute('DELETE FROM posts WHERE id = ?', (id,))
     conn.commit()
     conn.close()
     flash('"{}" was successfully deleted!'.format(post['title']))
-    return redirect(url_for('index'))
+    return await redirect(url_for('index'))
 
 
 if __name__ == "__main__":

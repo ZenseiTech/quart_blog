@@ -2,9 +2,9 @@
 
 source ./set_environment.sh
 
-echo $FLASK_APP
+echo $QUART_APP
 
-echo $FLASK_ENV
+echo $QUART_ENV
 
 #flask run
 
@@ -14,5 +14,5 @@ echo $FLASK_ENV
 # run in different port
 #flask run -p 5001
 
-flask run --debug
+quart --debug run
 
