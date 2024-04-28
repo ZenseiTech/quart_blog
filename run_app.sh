@@ -6,13 +6,14 @@ echo $QUART_APP
 
 echo $QUART_ENV
 
-#flask run
+#quart run
 
 # for external connection
-#flask run --host=0.0.0.0
+#quart --host=0.0.0.0 run
 
 # run in different port
-#flask run -p 5001
+#quart -p 5001 run
 
-quart --debug run
+# quart --debug run
+hypercorn app:app
 

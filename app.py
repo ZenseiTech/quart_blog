@@ -40,8 +40,9 @@ async def post(post_id):
 @app.route('/create', methods=('GET', 'POST'))
 async def create():
     if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
+        form = await request.form
+        title = form['title']
+        content = form['content']
 
         if not title:
             flash('Title is required!')
