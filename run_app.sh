@@ -15,5 +15,5 @@ echo $QUART_ENV
 #quart -p 5001 run
 
 # quart --debug run
-hypercorn app:app
+hypercorn --bind 0.0.0.0:8000 v--workers 8 app:app
 
